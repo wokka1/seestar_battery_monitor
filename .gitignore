@@ -1,4 +1,5 @@
 config.json
 state.json
+last_poll.json
 .venv/
 __pycache__/
