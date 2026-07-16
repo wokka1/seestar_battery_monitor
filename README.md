@@ -218,6 +218,48 @@ AP credentials, storage info, etc. Treat the full response as sensitive if
 you log or share it - the dashboard only surfaces the fields that seemed
 generally useful and safe to display.
 
+## Bonus: triggering a software reboot
+
+The same authenticated connection can also send `pi_reboot` to restart the
+telescope's onboard computer - confirmed working live. A few things worth
+knowing before you try it:
+
+- **This is a soft, application-level restart, not a full power cycle.**
+  WiFi and power stay up the entire time - only the onboard imaging/control
+  software restarts. If you're dealing with a battery-drain-while-charging
+  problem, this will **not** fix it (confirmed by testing) - that needs an
+  actual power-off/power-on cycle of the charger itself, which is a separate
+  problem from anything this repo does.
+- There's a short delay between sending the command and anything visibly
+  happening - the power light briefly goes off, then orange, before
+  settling back to a normal "ready" state a few seconds later.
+- **A small (~5°) mount movement was observed right before shutdown**, as
+  part of whatever internal routine runs during reboot - worth knowing if
+  you're watching the telescope while this runs, so it isn't mistaken for
+  something going wrong.
+- Any software connected to the telescope (NINA, the official app, etc.)
+  will lose its connection and need to reconnect once the reboot finishes.
+
+To send it yourself, the command is `{"id":<any number>,"method":"pi_reboot"}`,
+sent the same way as `get_device_state` after completing the auth handshake
+below. Not wrapped in its own script here since this repo is scoped to
+read-only monitoring, but the `seestar_battery.py` module's connection
+handling can be reused directly if you want to build this yourself.
+
+## Other native commands (reference only, not implemented here)
+
+The same protocol supports far more than telemetry and reboots - mount
+slewing, autofocus, polar alignment, plate-solving, imaging/stacking
+control, and more (documented by the community-reverse-engineered
+`seestar_alp` project). **This repo deliberately only implements read-only
+telemetry and the reboot command above** - not mount or imaging control -
+since driving the telescope is better done through your capture software's
+own equipment layer (e.g. NINA via ASCOM/Alpaca), which has its own safety
+handling that a raw native command would bypass entirely. If you're
+building your own automation on top of this protocol, keep that same
+separation in mind: use this for status/monitoring, and a real ASCOM/Alpaca
+layer for anything that actually moves the telescope.
+
 ## Protocol details
 
 The S50 speaks JSON-RPC over a plain TCP socket on port 4700. Before
