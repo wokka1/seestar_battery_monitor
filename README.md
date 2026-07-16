@@ -7,6 +7,8 @@ talk to, and that's the whole point: Alpaca has no battery data at all. This
 project talks to the telescope the same way the official app does, so it can
 show you battery percentage, charging status, internal temperature, and more.
 
+![Dashboard screenshot](dashboard.png)
+
 It includes:
 - A one-off command-line query tool
 - A recurring background monitor that alerts you (Discord and/or Pushover)
