@@ -1,0 +1,6 @@
+{
+  "seestar_host": "10.0.0.1",
+  "private_key_path": "/Applications/Seestar.app/Wrapper/Seestar.app/my_private.pem",
+  "low_battery_threshold": 75,
+  "discord_webhook_url": "https://discord.com/api/webhooks/REPLACE/ME"
+}
