@@ -121,7 +121,7 @@ everything's set up right, you'll see a big block of information about your
 telescope, including a `pi_status` section near the end with your actual
 battery percentage and charging status.
 
-## The three tools in this project
+## The tools in this project
 
 ### 1. `seestar-battery-query.py` - one-off check
 
@@ -189,6 +189,26 @@ the Terminal window, or close that window).
 
 This is intentionally not exposed to the internet - only reachable from
 other devices on your own local network (or VPN, if you have one set up).
+
+### 4. `verify_charging.py` - confirm charging actually resumed
+
+A small helper for a specific automation scenario: you've remotely
+power-cycled the outlet the Seestar is charging from (via a smart plug or
+similar), and you want to confirm the *telescope* actually started charging
+again - not just that the outlet itself reports "on." A smart plug can be
+on while a loose cable, a bad port, or a telescope-side fault means no
+actual charging is happening.
+
+It polls the Seestar's own status until `charger_status` reports
+`"Charging"`, or gives up after a timeout:
+
+```
+.venv/bin/python3 verify_charging.py [timeout_seconds]   # default timeout: 60s
+```
+
+Exits `0` if charging resumed in time, `1` if it didn't - handy as a check
+in a larger recovery script. It needs to run somewhere that can reach the
+Seestar's own WiFi network, same as the other tools here.
 
 ## Troubleshooting
 
